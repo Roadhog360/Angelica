@@ -7,7 +7,6 @@ import org.spongepowered.asm.lib.ClassWriter;
 import org.spongepowered.asm.lib.ClassReader;
 import org.spongepowered.asm.lib.Opcodes;
 import org.spongepowered.asm.lib.tree.AbstractInsnNode;
-import org.spongepowered.asm.lib.tree.AnnotationNode;
 import org.spongepowered.asm.lib.tree.ClassNode;
 import org.spongepowered.asm.lib.tree.FieldInsnNode;
 import org.spongepowered.asm.lib.tree.FieldNode;
@@ -19,7 +18,6 @@ import org.spongepowered.asm.lib.tree.MethodNode;
 import org.spongepowered.asm.lib.tree.TypeInsnNode;
 import org.spongepowered.asm.lib.tree.VarInsnNode;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class StacksOnStacksTransformer implements IClassTransformer {
@@ -122,14 +120,6 @@ public class StacksOnStacksTransformer implements IClassTransformer {
                 fn.access = fn.access & (~Opcodes.ACC_STATIC);
             }
         }
-
-        // Add a ThreadSafeISBRH annotation
-        AnnotationNode isbrhAnnotation = new AnnotationNode("Lcom/gtnewhorizons/angelica/api/ThreadSafeISBRH;");
-        isbrhAnnotation.values = ImmutableList.of("perThread", true);
-        if (cn.visibleAnnotations == null) {
-            cn.visibleAnnotations = new ArrayList<>();
-        }
-        cn.visibleAnnotations.add(isbrhAnnotation);
     }
 
     private void transformClientUtils(ClassNode cn) {

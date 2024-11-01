@@ -11,12 +11,10 @@ import java.util.function.Supplier;
 
 public enum CompatASMTransformers {
 
-    EXTRA_UTILITIES_ISBRH("RenderBlockColor Transformer", () -> AngelicaConfig.fixExtraUtilsSodiumCompat, Side.CLIENT,
-        "com.gtnewhorizons.angelica.transform.compat.ExtraUtilsTransformer"
-    ),
     STACKS_ON_STACKS_ISBRH("RenderTilePile Transformer", () -> AngelicaConfig.fixStacksOnStacksSodiumCompat, Side.CLIENT, "com.gtnewhorizons.angelica.transform.compat.StacksOnStacksTransformer"),
     FIELD_LEVEL_TESSELLATOR("Field Level Tessellator Transformer", () -> AngelicaConfig.enableSodium, Side.CLIENT, "com.gtnewhorizons.angelica.transform.compat.FieldLevelTessellatorTransformer"),
     GET_TILE_ENTITY_NULL_GUARD("getTileEntity Null Guard Transformer", () -> AngelicaConfig.enableSodium, Side.CLIENT, "com.gtnewhorizons.angelica.transform.compat.GetTileEntityNullGuardTransformer"),
+    THREAD_SAFE_ISBRH_ANNOTATION("ThreadSafeISBRHAnnotation Transformer", () -> AngelicaConfig.enableSodium, Side.CLIENT, "com.gtnewhorizons.angelica.transform.compat.ThreadSafeISBRHAnnotationTransformer"),
     HUD_CACHING("HUDCaching Early Return Transformer", () -> AngelicaConfig.enableHudCaching && AngelicaConfig.enableHudCachingEventTransformer, Side.CLIENT,
         "com.gtnewhorizons.angelica.transform.HUDCachingTransformer")
     ;

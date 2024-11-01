@@ -1,7 +1,5 @@
 package com.gtnewhorizons.angelica.transform.compat;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import com.gtnewhorizons.angelica.loading.AngelicaTweaker;
 import net.minecraft.launchwrapper.IClassTransformer;
 import org.spongepowered.asm.lib.ClassReader;
@@ -23,9 +21,7 @@ import java.util.Map;
 
 public class GetTileEntityNullGuardTransformer implements IClassTransformer {
 
-    private static final Map<String, List<String>> patchMethods = ImmutableMap.of(
-        "com.tierzero.stacksonstacks.client.render.RenderTilePile", ImmutableList.of("renderWorldBlock")
-    );
+    private static final Map<String, List<String>> patchMethods = CompatRegistry.INSTANCE.getTileEntityNullGuardTransforms();
 
     public byte[] transform(final String className, String transformedName, byte[] basicClass) {
         if (basicClass == null) return null;

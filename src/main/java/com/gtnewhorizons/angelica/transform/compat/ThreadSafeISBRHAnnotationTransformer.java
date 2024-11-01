@@ -6,6 +6,7 @@ import org.spongepowered.asm.lib.ClassReader;
 import org.spongepowered.asm.lib.ClassWriter;
 import org.spongepowered.asm.lib.Opcodes;
 import org.spongepowered.asm.lib.tree.AbstractInsnNode;
+import org.spongepowered.asm.lib.tree.AnnotationNode;
 import org.spongepowered.asm.lib.tree.ClassNode;
 import org.spongepowered.asm.lib.tree.FieldInsnNode;
 import org.spongepowered.asm.lib.tree.InsnList;
@@ -15,17 +16,26 @@ import org.spongepowered.asm.lib.tree.MethodNode;
 import org.spongepowered.asm.lib.tree.VarInsnNode;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-public class FieldLevelTessellatorTransformer implements IClassTransformer {
+public class ThreadSafeISBRHAnnotationTransformer implements IClassTransformer {
 
-    private static final Map<String, List<String>> patchMethods = CompatRegistry.INSTANCE.getFieldLevelTessellatorTransforms();
+    private static final Map<String, Boolean> patchClasses = CompatRegistry.INSTANCE.getThreadSafeISBRHAnnotations();
+
+    private static final AnnotationNode perThreadTrue = new AnnotationNode("Lcom/gtnewhorizons/angelica/api/ThreadSafeISBRH;");
+    private static final AnnotationNode perThreadFalse = new AnnotationNode("Lcom/gtnewhorizons/angelica/api/ThreadSafeISBRH;");
+
+    static {
+        perThreadTrue.values = Arrays.asList("perThread", true);
+        perThreadFalse.values = Arrays.asList("perThread", false);
+    }
 
     public byte[] transform(final String className, String transformedName, byte[] basicClass) {
         if (basicClass == null) return null;
 
-        if (!patchMethods.containsKey(transformedName)) {
+        if (!patchClasses.containsKey(transformedName)) {
             return basicClass;
         }
 
@@ -33,11 +43,14 @@ public class FieldLevelTessellatorTransformer implements IClassTransformer {
         ClassNode cn = new ClassNode();
         cr.accept(cn, 0);
 
-        for (String targetMethod : patchMethods.get(transformedName)) {
-            for (MethodNode method : cn.methods) {
-                if (!method.name.equals(targetMethod)) continue;
-                injectLocalTessellatorAndReplaceFieldUsage(method);
-            }
+        if (cn.visibleAnnotations == null) {
+            cn.visibleAnnotations = new ArrayList<>();
+        }
+
+        if (patchClasses.getOrDefault(transformedName, true)) {
+            cn.visibleAnnotations.add(perThreadTrue);
+        } else {
+            cn.visibleAnnotations.add(perThreadFalse);
         }
 
         ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);

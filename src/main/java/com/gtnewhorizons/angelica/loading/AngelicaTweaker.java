@@ -9,6 +9,9 @@ import com.gtnewhorizons.angelica.config.AngelicaConfig;
 import com.gtnewhorizons.angelica.mixins.Mixins;
 import com.gtnewhorizons.angelica.mixins.TargetedMod;
 import com.gtnewhorizons.angelica.transform.compat.CompatASMTransformers;
+import com.gtnewhorizons.angelica.transform.compat.CompatRegistry;
+import com.gtnewhorizons.angelica.transform.compat.handlers.CompatHandler;
+import com.gtnewhorizons.angelica.transform.compat.handlers.CompatHandlers;
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
 import jss.notfine.asm.AsmTransformers;
 import jss.notfine.asm.mappings.Namer;
@@ -65,6 +68,11 @@ public class AngelicaTweaker implements IFMLLoadingPlugin, IEarlyMixinLoader {
 
         } catch (ConfigException e) {
             throw new RuntimeException(e);
+        }
+
+        List<CompatHandler> compatHandlers = CompatHandlers.getHandlers();
+        for (CompatHandler handler : compatHandlers) {
+            CompatRegistry.INSTANCE.register(handler);
         }
     }
 
